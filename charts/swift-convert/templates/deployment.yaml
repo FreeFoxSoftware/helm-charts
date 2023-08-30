@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: {{ include "swift-convert-api.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
           ports:
           - name: http
             containerPort: 80
