@@ -2,12 +2,11 @@ api:
   replicaCount: 1
   fullnameOverride: swift-convert-api
   image:
-    registry: europe-west4-docker.pkg.dev
-    repository: ff-infrastructure-shared/images/swift-convert
+    registry: ghcr.io/freefoxsoftware
+    repository: swift-convert
     pullPolicy: IfNotPresent
     ## Overrides the image tag whose default is the chart appVersion.
     # tag: "0.0.1"
-
 
   mongodb:
     # -- MongoDB DSN
