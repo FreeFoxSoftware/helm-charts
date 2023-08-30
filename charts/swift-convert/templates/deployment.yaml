@@ -20,8 +20,8 @@ spec:
       serviceAccountName: {{ include "swift-convert-api.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.api.image.name }}:{{ .Values.api.image.tag }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          image: {{ include "swift-convert-api.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - name: http
             containerPort: 80

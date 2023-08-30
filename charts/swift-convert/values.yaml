@@ -2,9 +2,11 @@ api:
   replicaCount: 1
   fullnameOverride: swift-convert-api
   image:
+    registry: europe-west4-docker.pkg.dev
+    repository: ff-infrastructure-shared/images/swift-convert
     pullPolicy: IfNotPresent
-    tag: "0.0.1+replaced.by.yq.in.pipeline"
-    name: europe-west4-docker.pkg.dev/ff-infrastructure-shared/images/swift-convert
+    ## Overrides the image tag whose default is the chart appVersion.
+    # tag: "0.0.1"
 
 
   mongodb:

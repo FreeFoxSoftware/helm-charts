@@ -43,3 +43,15 @@ Create the name of the service account to use
 {{- default "default" .Values.api.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Define API image
+*/}}
+{{- define "swift-convert-api.image" -}}
+{{- $registryName := .Values.api.image.registry -}}
+{{- $repositoryName := .Values.api.image.repository -}}
+{{- $tag := default .Chart.AppVersion .Values.api.image.tag | toString -}}
+{{- $separator := ":" -}}
+    {{- printf "%s/%s%s%s" $registryName $repositoryName $separator $tag -}}
+{{- end -}}
