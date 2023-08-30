@@ -1,0 +1,153 @@
+api:
+  replicaCount: 1
+  fullnameOverride: swift-convert-api
+  image:
+    pullPolicy: IfNotPresent
+    tag: "0.0.1+replaced.by.yq.in.pipeline"
+    name: europe-west4-docker.pkg.dev/ff-infrastructure-shared/images/swift-convert
+
+
+  mongodb:
+    # -- MongoDB DSN
+    dsn: "mongodb://swift-convert-mongo:27017"
+    allowDiskUse: true
+  ingress:
+    enabled: false
+    ## Labels to add to the Ingress
+    labels: { }
+    ## Annotations to add to the Ingress
+    annotations: { }
+    # Class name for the ingress host E.G. nginx
+    className: ""
+    ## The Path.
+    path: /
+    ## Hostnames must be provided if Ingress is enabled.
+    hosts: [ ]
+    # - swift-convert.example.com
+    ## Enable TLS configuration for the hostname defined at `api.ingress..hosts` parameter
+    tlsenabled: false
+    ## Placing a host in the TLS config will indicate a certificate should be created
+    tls: [ ]
+    # - hosts:
+    #     - swift-convert.example.com
+    #   secretName: swift-convert-cert-secret
+  
+  ## Service Account parameters
+  serviceAccount:
+    ## Specifies whether a service account should be created
+    create: true
+    ## Annotations to add to the service account
+    annotations: { }
+    ## The name of the service account to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    name: ""
+  
+## Service parameters
+service:
+  ## Adapter service type
+  type: ClusterIP
+  ## HTTP Port
+  port: 8088
+  ## Annotations
+  annotations: { }
+  ## Service labels
+  labels: { }
+
+# This shouldn't be here, should be a higher level
+# MongoDB parameters
+# For more configuration parameters of MongoDB chart please look here: https://github.com/bitnami/charts/tree/master/bitnami/mongodb#parameters
+mongodb:
+  # -- Toggle whether to install MongoDB
+  enabled: true
+  # -- MongoDB fullname override
+  fullnameOverride: "swift-convert-mongo"
+  # MongoDB Auth settings
+  auth:
+    # -- Toggle whether to enable MongoDB authentication
+    enabled: false
+  # -- MongoDB service settings
+  service:
+    port: "27017"
+    portName: "mongodb"
+    nodePort: true
+    clusterIP: ""
+  # -- MongoDB resource settings
+  resources:
+    requests:
+      cpu: 150m
+      memory: 100Mi
+  tolerations:
+    - key: kubernetes.io/arch
+      operator: Equal
+      value: arm64
+      effect: NoSchedule
+minio:
+  replicaCount: 1
+  ## Deploy Minio server to the cluster
+  enabled: true
+  ## Minio extra vars
+  extraEnvVars: {}
+  ## PVC Access Modes for Minio. The volume is mounted as read-write by a single node.
+  ## Read more about access modes here: http://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes
+  accessModes:
+    - ReadWriteOnce
+  ## Specify priorityClassName for Minio
+  priorityClassName: ""
+  ## Node labels for pod assignment.
+  nodeSelector: {}
+  ## Tolerations for pod assignment.
+  tolerations: []
+  ## Affinity for pod assignment.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+  affinity: {}
+  ## Minio image from DockerHub
+  image:
+    registry: docker.io
+    repository: minio/minio
+    tag: latest
+    pullPolicy: IfNotPresent
+  ## ServiceAccount name to use for Minio
+  serviceAccountName: ""
+  ## Optionally specify extra list of additional volumeMounts for Minio
+  extraVolumeMounts: []
+  ## Optionally specify extra list of additional volumes for Minio
+  extraVolumes: []
+  ## k8s Secret name for Minio root username
+  secretUserName: ""
+  ## Secret key for Minio root username taken from k8s secret
+  secretUserKey: ""
+  ## k8s Secret name for Minio root password
+  secretPasswordName: ""
+  ## Secret key for Minio root username taken from k8s secret
+  secretPasswordKey: ""
+  ## Plain text Minio root username
+  ## Plain text Minio root password
+  minioRootUser: "minioadmin"
+  minioRootPassword: "minioadmin"
+  ## PVC Storage Request for MinIO. Should be available in the cluster.
+  storage: 1Gi
+  ## Selector labels to match
+  matchLabels: []
+  ## Resources limits and requests
+  resources: {}
+  ## MinIO Liveness probe configuration
+  livenessProbe:
+    initialDelaySeconds: 3
+    periodSeconds: 10
+  ## MinIO Readiness probe configuration
+  readinessProbe:
+    initialDelaySeconds: 3
+    periodSeconds: 10
+  ## MinIO Pod Security Context
+  podSecurityContext: {}
+  ## MinIO Container Security Context
+  securityContext: {}
+rabbitmq:
+  enabled: true
+  replicaCount: 2
+  fullnameOverride: "swift-convert-rabbitmq"
+  auth:
+    password: password # RabbitMq has possibility to use secret over this
+  persistence: 
+    size: "1Gi"

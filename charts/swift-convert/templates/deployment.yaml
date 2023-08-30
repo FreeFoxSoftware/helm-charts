@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "swift-convert-api.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: 
+    {{- include "swift-convert-api.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "swift-convert-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "swift-convert-api.selectorLabels" . | nindent 8 }}
+
+    spec:
+      serviceAccountName: {{ include "swift-convert-api.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.api.image.name }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          env:
+          - name: MongoDbSettings__ConnectionString
+            value: "{{ .Values.api.mongodb.dsn }}"
+          - name: RabbitMqSettings__Host
+            value: "swift-convert-rabbitmq"
+          - name: RabbitMqSettings__Username
+            value: "user"
+          - name: RabbitMqSettings__Password
+            valueFrom:
+              secretKeyRef:
+                name: swift-convert-rabbitmq
+                key: rabbitmq-password
+          - name: RabbitMqSettings__QueueName
+            value: "swift-convert-events"
+          - name: MinioSettings__Endpoint
+            value: "swift-convert-minio-service-{{ .Release.Namespace }}:9000"
+          - name: MinioSettings__Username
+          {{- if .Values.minio.secretUserName }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.minio.secretUserName }}
+                key: {{ .Values.minio.secretUserKey }}
+          {{- else }}
+            value: {{ .Values.minio.minioRootUser }}
+          {{- end }}
+          - name: MinioSettings__Password
+          {{- if .Values.minio.secretPasswordName }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.minio.secretPasswordName }}
+                key: {{ .Values.minio.secretPasswordKey }}
+          {{- else }}
+            value: {{ .Values.minio.minioRootPassword }}
+          {{- end }}
