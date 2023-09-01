@@ -2,6 +2,25 @@ apiVersion: v1
 entries:
   swift-convert:
   - apiVersion: v2
+    appVersion: 0.1.16
+    created: "2023-09-01T21:01:25.288932695Z"
+    dependencies:
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 13.17.1
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.2
+    description: A Helm chart for Kubernetes
+    digest: b340b7dc5e68c5c31b5a01212ba6fb1091e164539ca11dd7eae280ca04a8f494
+    name: swift-convert
+    type: application
+    urls:
+    - https://github.com/FreeFoxSoftware/helm-charts/releases/download/swift-convert-0.0.7/swift-convert-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
     appVersion: 0.1.15
     created: "2023-08-31T07:26:36.760653458Z"
     dependencies:
@@ -96,4 +115,4 @@ entries:
     urls:
     - https://github.com/FreeFoxSoftware/helm-charts/releases/download/swift-convert-0.0.2/swift-convert-0.0.2.tgz
     version: 0.0.2
-generated: "2023-08-31T07:26:36.760684658Z"
+generated: "2023-09-01T21:01:25.288950894Z"
